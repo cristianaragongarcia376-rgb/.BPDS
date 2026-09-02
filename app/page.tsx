@@ -10,7 +10,7 @@ type Task = {
  };
 
 export default function Home() {
-  const [Tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [input, setInput] = useState("");
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editText, setEditText] = useState("");
@@ -23,19 +23,19 @@ export default function Home() {
         text: input.trim(),
         completed: false,
       };
-      setTasks([...Tasks, newTask]);
+      setTasks([...tasks, newTask]);
       setInput("");
     }
-  }
+  };
   
   //tachar 
   const toggleComplete = (id: number) => {
     setTasks(
-      Tasks.map((Tasks) => 
-         Tasks.id === id ? {...Tasks, completed: !Tasks.completed } : Tasks
+      tasks.map((tasks) => 
+         tasks.id === id ? {...tasks, completed: !tasks.completed } : tasks
       )
     );
-  }
+  };
 
   // iniciar edicion 
   const startEditing = (id: number, text: string) => {
@@ -47,7 +47,7 @@ export default function Home() {
   const saveEdit = () => {
     if (editText.trim()!== "" && editingId !== null) {
       setTasks(
-         Tasks.map((task) =>
+         tasks.map((task) =>
            task.id === editingId ? {...task, text: editText.trim() } : task
        )
       );
@@ -58,7 +58,7 @@ export default function Home() {
 
   // Eliminar tarea 
   const deleteTask = (id: number) => {
-    setTasks(Tasks.filter((Tasks) => Tasks.id !== id));
+    setTasks(tasks.filter((tasks) => tasks.id !== id));
   };
 
   return (
@@ -83,9 +83,9 @@ export default function Home() {
 
     {/* Lista de tareas */}
     <ul style={{ listStyle: "none", padding: 0, marginTop: 20}}>
-      {Tasks.map((Tasks) => (
+      {tasks.map((tasks) => (
         <li
-         key={Tasks.id}
+         key={tasks.id}
          style={{
            display: "flex",
            alignItems: "center",
@@ -100,13 +100,13 @@ export default function Home() {
         {/* checkbox */}
         <input
         type = "checkbox"
-        checked={Tasks.completed}
-        onChange={() => toggleComplete(Tasks.id)}
+        checked={tasks.completed}
+        onChange={() => toggleComplete(tasks.id)}
         style={{ marginRight: 12, width: 18, height: 18 }}
         />
 
         {/* Texto de la tarea */}
-        {editingId === Tasks.id ? (
+        {editingId === tasks.id ? (
           <input
             type="text"
             value={editText}
@@ -124,21 +124,21 @@ export default function Home() {
           /> 
         ) : (
           <span
-          onClick={() => startEditing(Tasks.id, Tasks.text)}
+          onClick={() => startEditing(tasks.id, tasks.text)}
           style={{
             flex: 1,
-            textDecoration: Tasks.completed ? "line-through" : "none",
-            color: Tasks.completed ? "#888" : "#000",
+            textDecoration: tasks.completed ? "line-through" : "none",
+            color: tasks.completed ? "#888" : "#000",
             cursor: "pointer",
           }}
           >
-            {Tasks.text}
+            {tasks.text}
           </span>
         )}
 
         {/* Boton eliminar*/}
         <button
-        onClick={() => deleteTask(Tasks.id)}
+        onClick={() => deleteTask(tasks.id)}
         style={{
           background: "#e74c3c",
           color: "#fff",
@@ -155,7 +155,7 @@ export default function Home() {
     ))}
   </ul>
 
-  {Tasks.length === 0 && (
+  {tasks.length === 0 && (
     <p style={{ color: "#999", textAlign: "center", marginTop: 30}}>
       No hay tareas. ¡Agrega una!
     </p>
