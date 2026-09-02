@@ -1,69 +1,165 @@
-import Image from "next/image";
+"use client";
+
+import { table } from "console";
+import { useState } from "react";
+
+type Task = {
+  id: number;
+  text: string;
+  completed: boolean;
+ };
 
 export default function Home() {
+  const [Tasks, setTasks] = useState<Task[]>([]);
+  const [input, setInput] = useState("");
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editText, setEditText] = useState("");
+
+  // Crear tarea ( al presionar Enter)
+  const handlekeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e. key === "Enter" && input.trim() !== "") {
+      const newTask: Task = {
+        id: Date.now(),
+        text: input.trim(),
+        completed: false,
+      };
+      setTasks([...Tasks, newTask]);
+      setInput("");
+    }
+  }
+  
+  //tachar 
+  const toggleComplete = (id: number) => {
+    setTasks(
+      Tasks.map((Tasks) => 
+         Tasks.id === id ? {...Tasks, completed: !Tasks.completed } : Tasks
+      )
+    );
+  }
+
+  // iniciar edicion 
+  const startEditing = (id: number, text: string) => {
+    setEditingId(id);
+    setEditText(text);
+  };
+
+  // Guardar edicion
+  const saveEdit = () => {
+    if (editText.trim()!== "" && editingId !== null) {
+      setTasks(
+         Tasks.map((task) =>
+           task.id === editingId ? {...task, text: editText.trim() } : task
+       )
+      );
+    }
+    setEditingId(null);
+    setEditText("");
+  };
+
+  // Eliminar tarea 
+  const deleteTask = (id: number) => {
+    setTasks(Tasks.filter((Tasks) => Tasks.id !== id));
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div style={{ maxWidth: 500, margin: "50px auto", fontFamily: "sans-serif" }}>
+      <h1> TODO List</h1>
+
+      {[/* Input para crear tarea */]}
+      <input
+      type="text"
+      placeholder="Escribe tu tarea y presiona enter.."
+      value={input}
+      onChange={(e) => setInput(e. target.value)}
+      onKeyDown={handlekeyDown}
+      style={{
+        width: "100%",
+        padding: "10px",
+        fontSize: "16px",
+        border: "1px solid #ccc",
+        borderRadius: "8px",
+      }}
+    />
+
+    {/* Lista de tareas */}
+    <ul style={{ listStyle: "none", padding: 0, marginTop: 20}}>
+      {Tasks.map((Tasks) => (
+        <li
+         key={Tasks.id}
+         style={{
+           display: "flex",
+           alignItems: "center",
+           justifyContent: "space-between",
+           background: "#f9f9f9",
+           padding: "10px 15px",
+           marginBottom: 8,
+           borderRadius: 8,
+           border: "1px solid #eee"
+         }}
+       >
+        {/* checkbox */}
+        <input
+        type = "checkbox"
+        checked={Tasks.completed}
+        onChange={() => toggleComplete(Tasks.id)}
+        style={{ marginRight: 12, width: 18, height: 18 }}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+        {/* Texto de la tarea */}
+        {editingId === Tasks.id ? (
+          <input
+            type="text"
+            value={editText}
+            onChange={(e) => setEditText(e.target.value)}
+            onBlur={saveEdit}
+            onKeyDown={(e) => e.key === "enter" && saveEdit()}
+            autoFocus
+            style={{
+              flex: 1,
+              padding: "6px 10px",
+              fontSize: "16px",
+              border: "1px solid #0070f3",
+              borderRadius: 4,
+             }}
+          /> 
+        ) : (
+          <span
+          onClick={() => startEditing(Tasks.id, Tasks.text)}
+          style={{
+            flex: 1,
+            textDecoration: Tasks.completed ? "line-through" : "none",
+            color: Tasks.completed ? "#888" : "#000",
+            cursor: "pointer",
+          }}
           >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
-}
+            {Tasks.text}
+          </span>
+        )}
+
+        {/* Boton eliminar*/}
+        <button
+        onClick={() => deleteTask(Tasks.id)}
+        style={{
+          background: "#e74c3c",
+          color: "#fff",
+          border: "none",
+          borderRadius: 4,
+          padding: "6px 12px",
+          cursor: "pointer",
+          fontSize: "14px",
+        }}
+        >
+          x Eliminar
+        </button>
+     /</li>
+    ))}
+  </ul>
+
+  {Tasks.length === 0 && (
+    <p style={{ color: "#999", textAlign: "center", marginTop: 30}}>
+      No hay tareas. ¡Agrega una!
+    </p>
+  )}
+</div> 
+);
+                                }
