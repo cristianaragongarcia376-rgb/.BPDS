@@ -152,6 +152,7 @@ export default function Home(): import("react").JSX.Element {
             outline: "none",
             transition: "border-color 0.2s, box-shadow 0.2s",
             boxSizing: "border-box",
+            color: "#000",
           }}
           onFocus={(e) => {
             e.target.style.borderColor = "#667eea";
