@@ -128,7 +128,7 @@ export default function Home(): import("react").JSX.Element {
         <p
           style={{
             textAlign: "center",
-            color: "#888",
+            color: "#000",
             marginBottom: 30,
             fontSize: "0.95rem",
           }}
@@ -176,7 +176,7 @@ export default function Home(): import("react").JSX.Element {
             <h2
               style={{
                 fontSize: "1.1rem",
-                color: "#555",
+                color: "#000",
                 margin: 0,
                 fontWeight: 600,
               }}
@@ -271,7 +271,7 @@ export default function Home(): import("react").JSX.Element {
                 ) : (
                   <span
                     onClick={() => startEditing(task.id, task.text)}
-                    style={{g
+                    style={{
                       flex: 1,
                       textDecoration: task.completed ? "line-through" : "none",
                       color: task.completed ? "#888" : "#333",
@@ -315,7 +315,7 @@ export default function Home(): import("react").JSX.Element {
           {tasks.length === 0 && (
             <p
               style={{
-                color: "#bbb",
+                color: "#000",
                 textAlign: "center",
                 marginTop: 30,
                 fontSize: "15px",
@@ -346,7 +346,7 @@ export default function Home(): import("react").JSX.Element {
               <h2
                 style={{
                   fontSize: "1.1rem",
-                  color: "#999",
+                  color: "#000",
                   margin: 0,
                   fontWeight: 600,
                 }}
@@ -449,7 +449,7 @@ export default function Home(): import("react").JSX.Element {
           {deletedTasks.length === 0 && (
             <p
               style={{
-                color: "#ccc",
+                color: "#000",
                 textAlign: "center",
                 marginTop: 20,
                 fontSize: "14px",
